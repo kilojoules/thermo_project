@@ -8,9 +8,8 @@ def pr_to_temp(p_r):
 def temp_to_pr(temp):
    return np.interp(temp, air_dat['T'], air_dat.P_r)
 
-def work(t3=20., ql=0.6, t1 = 275., tho=310., tlo=265., cp = 1.005):
+def work(t3=20., ql=0.6, t1 = 275., tho=310., tlo=265., cp = 1.005, mdotHElow=1., mdotHEhigh=1., mdot=1.):
    t3 += 273
-   #cp = 1.005 # kJ/kg/k
    k = 1.4
 
    t4 = t1 - ql/cp
@@ -36,27 +35,10 @@ def work(t3=20., ql=0.6, t1 = 275., tho=310., tlo=265., cp = 1.005):
 work = np.vectorize(work)
 T = np.arange(10, 30)
 Q = np.arange(0, 80)
-#fig, ax1 = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(10,10))
-#for i in range(1,5):
-#   d, r = divmod(i-1, 2)
-#   wn, qh = work(t3=T, ql=.6 * i)
-#   ax1[d, r].plot(T, wn, label='net work')
-#   ax1[d, r].plot(T, qh, label='cooling load')
-#   ax1[d,r].legend()
-#   ax1[d,r].set_title("ql = %f kW"%(.6*i))
-plt.plot(Q, work(t3=15, ql=Q), label='T3=15') 
-plt.plot(Q, work(t3=20, ql=Q), label='T3=20') 
-plt.plot(Q, work(t3=20, ql=Q), label='T3=20') 
-plt.plot(Q, work(t3=25, ql=Q), label='T3=25') 
-#plt.plot(T, work(ql=Q), label='') 
-#plt.plot(T, work(ql=Q), label='ql=20') 
+plt.plot(Q, work(ql=Q), label='Air') 
+plt.plot(Q, work(ql=Q, cp=0.844), label='CO2') 
+plt.plot(Q, work(ql=Q,  cp=2.19), label='Ammonia') 
 plt.legend()
-#ax1[0,0].set_ylabel('Work (kW)')
-#ax1[1,0].set_ylabel('Work (kW)')
-#ax1[1,1].set_xlabel('Ambient Temperature (K)')
-#ax1[1,0].set_xlabel('Ambient Temperature (K)')
-#plt.savefig('effs.pdf')
 plt.xlabel('qh (kW)')
-#plt.ylabel('Qh (kW)')
 plt.ylabel('COP')
 plt.savefig('./T_conts.pdf')
