@@ -8,9 +8,9 @@ def pr_to_temp(p_r):
 def temp_to_pr(temp):
    return np.interp(temp, air_dat['T'], air_dat.P_r)
 
-def work(t3=20., ql=0.6, t1 = 275., tho=310., tlo=265.):
+def work(t3=20., ql=0.6, t1 = 275., tho=310., tlo=265., cp = 1.005):
    t3 += 273
-   cp = 1.005 # kJ/kg/k
+   #cp = 1.005 # kJ/kg/k
    k = 1.4
 
    t4 = t1 - ql/cp
@@ -59,4 +59,4 @@ plt.legend()
 plt.xlabel('qh (kW)')
 #plt.ylabel('Qh (kW)')
 plt.ylabel('COP')
-plt.show()
+plt.savefig('./T_conts.pdf')
