@@ -1,0 +1,237 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+%\usepackage{asmath}
+\title{Optimization Under Uncertainty of an Air-cycle home refrigerator }
+\author{Jordann McCarty and Julian Quick}
+\date{October 2017}
+
+% 1 inch margins
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Conventional refrigeration fluids have undesired environmental impacts due to a high Ozone Depletion Potential and Global Warming Potential (1).  Due to refrigerants harmful impacts on the environment the Environmental Protection Agency (EPA) has a Significant New Alternatives Policy Program that identifies other refrigerant alternatives (2). Consequently, air-sourced refrigeration units are becoming increasingly viable in the current market.The refrigeration cycle uses ambient air to absorb heat, cooling the system of interest. The variability of ambient temperatures may be an important factor when designing a refrigeration product to be both low-cost and reliable in many regions. 
+
+In this paper, we propose the design of an industrial refrigeration unit using air-cycle refrigeration. In particular, we explore the impact variability in atmospheric temperature has on required work input. The industrial refrigerator is designed to maintain a cooling temperature of 0\degree C and a load of 60 kW. The environmental temperature is 20\degree C. In addition, there is a constraint that the heat shed by this apparatus cannot be at a temperature greater than 40\degree C.
+
+\begin{figure}[htb!]
+\centering
+\includegraphics[scale=.6]{cycle}
+\caption{\label{fig:cycle} Schematic of the proposed refrigeration unit.}
+\end{figure}
+
+\section{Methodology}
+
+\subsection {Head loss in Pipes}
+ In order for this model to represent a real system pressure drop in pipes due to friction, bends, expansion or contraction must be accounted for. In order to account for major losses one must account for the friction in a pipe that causes a pressure drop in the working fluid. The equation used to calculate the major head loss is 
+
+\begin{equation}
+     h_f=f\frac{L}{D}\frac{V^2}{2g_c}
+\end{equation}
+
+ where $h_f$ is the major head loss, $f$ is the Darcy-Weisbach friction factor, $L$ is the length of pipe, $D$ is the inner diameter of the pipe, $V$ is the velocity of the fluid, and $g_c$ is the gravity. The Darcy friction factor $f$ for turbulent flows in a circular pipe can be computed by the following equation, this equation is sometimes called the Haaland Equation. 
+ 
+ \begin{equation}
+     \frac{1}{\sqrt{f}} = -1.8 log [\frac{\epsilon/{D}}{3.7}^{1.11} + \frac{6.9}{Re}]
+ \end{equation}
+ 
+ In this equation $\epsilon/D$ represents the relative roughness of the pipe and $Re$ is the Reynolds Number. Alternatively, the Darcy friction factor can be found in the Moody Diagram if the relative roughness and Reynolds Number is known. 
+ 
+For the air refrigeration system the geometry will be set and the pressure loss will be calculated and accounted for. This will affect the thermodynamic through any length of piping through the cooling system. 
+
+The refrigeration system will also have some minor head lass associated with it. This minor head lass can come from bends in the pipe or sudden change in inner diameter of the pipe. The minor losses can be evaluated using the equation below. 
+
+\begin{equation}
+    h_f=K\frac{V^2}{2g_c}
+\end{equation}
+ 
+ Where K is a loss coefficient. The major and minor head lasses are related to pressure drop by 
+ 
+ \begin{equation}
+     h_f=\bigtriangledown P/\gamma
+ \end{equation}
+ 
+ where $\bigtriangledown P$ is the pressure drop through the section of analyzed pipe and $\gamma$ is the specific weight of the working fluid.
+
+After determining pressure loss, the temperature associated with the reduced pressure can be calculated using the ideal gas law and holding entropy constant:
+
+\begin{equation}
+    T_x = T_y (\frac{P_x}{P_y})^\frac{k-1}{k}
+\end{equation}
+
+The Temperature-entropy chart is shown in Figure \ref{Ts}.
+
+\begin{figure}[htb!]
+\centering
+\includegraphics[scale=.3]{Ts}
+\caption{\label{Ts} Schematic of the system entropy and temperature states.}
+\end{figure}
+
+\subsection{Mathematical Model}
+
+
+\subsubsection{Heat Exchangers}
+Heat exchangers allow heat to be transfered into or out of the system (Figure \ref{fig:HE}). The work required for the high- and low-temperature heat exchangers is $W_H =w_H \dot{m}_H$ and $W_L =w_L \dot{m}_L$. In this analysis we fix the length of the heat exchanger piping and optimize the diameters.
+
+\paragraph{Low-Temperature Heat Exchanger}
+The low-temperature heat exchanger conveys air from the refrigerated environment, transfers heat from this air to the air in the Brayton cycle, then discharges the cooled air into the refrigerated space. In the real system, this will be a series of parallel pipes that flow through the refrigerated space. In our mathematical model, we approximate this geometry as a 50 meter pipe. The mass flow rate and exit temperature of the low-temperature heat exchanger are unconstrained design variables.
+
+\paragraph{High-Temperature Heat Exchanger}
+The high-temperature heat exchanger intakes air from the environment. In our mathematical model, we approximate this interaction using the average environmental temperature (e.g., 20\degree C). The outlet temperature of the high-temperature heat exchanger is set as 50\degree C to avoid discharging air at unsafe temperatures. The heat transfered by the high-temperature heat exchanger and inlet and outlet temperatures are set. So, the mass flow rate through the high-temperature heat exchanger can be calculated:
+
+\begin{equation}
+    \dot{m}_{h} = \frac{Q_h}{C_p(T_{ho}-T_{3})}
+\end{equation}
+
+\begin{figure}[htb!]
+    \centering
+     \includegraphics[scale=0.35]{heatExchangers}
+     \caption{\label{fig:HE} Hot and cold heat exchanger models considered.}
+\end{figure}
+
+\subsection{Optimization Strategy}
+While there are physical constraints on the system, there are several aspects that are not constrained by the system physics. We used the constrained optimization by linear approximation (COBYLA) direct search optimization method to design the system. We minimize the net system work by changing the low- and high-temperature heat exchanger mass flow rates, 
+
+\subsubsection{Design Variables}
+The design variables in our model are: (1) low-temperature heat exchanger diameter, (2) high-temperature heat exchanger diameter, (3) low-temperature heat exchanger discharge temperature, (4) the diameter of the low-pressure piping in the Brayton cycle, (5) the diameter of the high-pressure piping in the Brayton cycle, (6) the mass flow rate through the Brayton cycle, (7) The pressure ratio.
+
+\section{Analysis}
+We analyze our mathematical model, assessing sensitivities, then design the system with optimization.
+
+
+The limiting factor in the design is the heat shed by the refrigerator. As the environmental temperature, the required work decreases and the required heat expelled increases:
+
+\begin{figure}
+    \centering
+     \includegraphics[scale=0.5]{loading}
+     \caption{\label{fig:deps} Relationship between hot cooling load, gas type ($C_p$), and coefficient of performance. This analysis assumed 1$\frac{kg}{s}$ of mass flow.}
+\end{figure}
+\appendix
+\Section{Mathematical model formulation}
+The following is a detailed description of the mathematical model describing the refrigerant system. We assume that the gas behaves as an ideal gas. 
+
+We specify the cooling temperature as $T_{1a}$, initial pressure as $P_{1a}$ and cooling load $Q_L$. $T_{3a}$  is set as the ambient temperature.
+
+Using the cooling temperature and load, the temperature before the low temperature heat exchanger ($T_{4b}$) can be calculated as:
+
+\begin{equation}
+T_{4b} = T_{1a} - \frac{Q_L}{\dot{m} C_p}.
+\end{equation}
+
+The pressure  $P_{4b}$ can be found using the isentropic ideal gas relationship between temperature and pressure: 
+
+\begin{equation}
+    P_{4b} = \frac{P_{1a}}{(\frac{T_{1a}}{T_{4b}})^{\frac{k}{k-1}}},
+\end{equation}
+
+and the head loss equation is used to compute the pressure before the low-temperature heat exchanger:
+
+\begin{equation}
+    P_{4a} = \P_{4b} + \sum h_f  \gamma.
+\end{equation}
+
+This information can be used to find the temperature at the outlet of the turbine:
+
+\begin{equation}
+   T_{4a} = T_{4b} (\frac{P_{4a}}{P_{4b}})^{\frac{k-1}{k}}.
+\end{equation}
+
+The pressure just before the compressor is found knowing the major and minor head losses,
+\begin{equation}
+    P_{1b} = P_{1a} - \sum h_f  \gamma,
+\end{equation}
+
+and the temperature after the compressor is determined from specifying the pressure ratio (the pressure at $P_{2a}=rP_{1b}$):
+\begin{equation}
+   T_{2a} = T_{1b} (\frac{P_{2a}}{P_{1b}})^{\frac{k-1}{k}}.
+\end{equation}
+
+The work require by the compressor is:
+\begin{equation}
+    W_{12} = \frac{\dot{m} c_p (T_{2a} - T_{1b})}{\eta_{compressor}}.
+\end{equation}
+
+The pressure before the high-temperature heat exchanger
+is now found knowing the major and minor head losses in the pipe, 
+
+\begin{equation}
+    P_{2b}=P_{2a}-\sum h_f  \gamma.
+\end{equation}
+
+The temperature at $T_{2b}$ can be found using the ideal gas relationship,
+
+\begin{equation}
+ T_{2b} = T_{2a} (\frac{P_{2b}}{P_{2a}})^{\frac{k-1}{k}}.
+\end{equation}
+ 
+ The temperature at state 3a is specified as ambient, so the heat shed ($Q_h$) can be calculated as:
+
+ \begin{equation}
+    Q_h=C_p(T_{2b}-T_{3a}).
+\end{equation}
+
+The pressure after the high-temperture heat exchanger can be calculatedas:
+
+\begin{equation}
+    P_{3a} = \frac{P_{2b}}{(\frac{T_{3a}}{T_{2b}})^{\frac{k}{k-1}}},
+\end{equation}
+
+The pressure just before the turbine is found knowing the major and minor head loss in the pipe:
+
+\begin{equation}
+    P_{3b}=P_{3a}-\sum h_f  \gamma.
+\end{equation}
+
+The temperature before the turbine can be calculated using the ideal gas relationship:
+
+\begin{equation}
+    T_{3b} = T_{3a} (\frac{P_{3b}}{P_{3a}})^{\frac{k-1}{k}}.
+\end{equation}
+
+%The pressure after the turbine, $P_4a$ can be found knowing the major and minor head losses because the state at 4b was previously calculated. 
+
+%\begin{equation}
+ %   P_{4a}=P_{4b}+\sum h_f 
+%\end{equation}
+
+
+%The state after the turbine is found by first assuming the turbine is isentropic.
+
+% but it is also defined by knowing the ideal gas relation between the states since the pressure is known from the head loss so which do we proceed with 
+% not sure what you mean. I think you had the compressor and turbine swapped in your analysis...
+
+%\begin{equation}
+%    T_{4a,s} = T_{4b} \frac{P_{4a}}{P_{3b}} ^{\frac{k-1}{k}}
+%\end{equation}
+
+Using this and knowing the isentropic efficiency of the compressor, the actual work from the turbine is calculated:
+
+\begin{equation}
+    W_{34} = \dot{m} c_p (T_{3b} - T_{4a,s}) \eta_{turbine}
+\end{equation} 
+
+
+%As a sanity check, we require that
+%\begin{equation}
+%Q_h = C_p ( T_2 - T_3) = W_{in} + Q_L - W_{out}
+%\end{equation}
+
+The total work required by the system is
+
+\begin{equation}
+W_{net} = W_{out} + W_h + W_c - W_{in}
+\end{equation}
+
+where $w_h=\frac{C_p(T_{ho} - T_{3})}{\eta_{compressor}} - qh$ and $w_c=\frac{C_p(T_{co} - T_{4})}{\eta_{compressor}} + qc$
+
+\end{document}
+
