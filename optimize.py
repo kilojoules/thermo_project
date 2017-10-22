@@ -38,7 +38,7 @@ State variables
 t1 - temperature inside the cooled space (K)
 p1 - pressure at exit of low-temp heat exchanger
 tho - maximum outlet temperature of high-temperature heat exchanger (K)
-t3 - environmental/ambient temperature (C)
+t3a - environmental/ambient temperature (K)
 ql - cooling load (kW)
 cp - kj/kg/K
 n_s_comp = compressor isentropic efficiency
@@ -49,7 +49,7 @@ L_1 = 20.
 L_2 = 2.
 L_3 = 2.
 L_4 = 20.
-def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=20., ql=100, t1a=275., cp=1.005, tho=310., p1a=400., n_s_comp=.9, n_s_turb=.9, returnall=False):
+def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=293.15, ql=100, t1a=275., cp=1.005, tho=310., p1a=400., n_s_comp=.9, n_s_turb=.9, returnall=False):
    print DV
 #def work(tlo=265., mdotHElow=1., mdot=1., LHEd=1., HHEd=1., HPd = .25, LPd=1., t3=20., ql=0.6, t1=275., cp=1.005, tho=310., ):
    tlo = DV[0]
@@ -61,7 +61,6 @@ def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=20., ql=100, t1a=275., cp=1
    LPd = DV[6]
    r = DV[7]
 
-   t3a += 273
    k = 1.4
 
 
@@ -106,7 +105,7 @@ def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=20., ql=100, t1a=275., cp=1
    if wl < 0: return 99999
    wnet = w12 + wh + wl - w34 # Wnet
    if wnet <0:  print 'wnet<0 ', w12, wh, wl, w34; quit()
-   if returnall: return wh, wl, t2b, t3a, 
+   if returnall: return [wh, (t2b - t3a + t3a - tho ) / 2, wl, (t4b - t1a + t1a - tlo) / 2]
    return wnet
 def cb(x): print x
 # Optimization
@@ -129,6 +128,15 @@ print 'pressure ratio is ', x[7]
 print 'Work is ', w, ' kW'
 print 'baseline is ', w0, ', kW'
 print ' '
-print 'Heat Exchanger Area Requirements:'
-print '
+print 'Heat Exchanger Area Requirements: (assume k=385.0 W/mK and x = .005 m)'
+U = .358 / .005 # kW / m^2 / K
+qh = p[0]
+dth = p[1]
+ql = p[2]
+dtl = p[3]
+print ' --- ' 
+print 'qh ', qh, ', DTh ', dth, ', ql ', ql, ', DTl', dtl
+print ' --- ' 
+print 'High-temperature heat exchanger area: ', qh / dth / U, ' m^2'
+print 'Low-temperature heat exchanger area: ', ql / dtl / U, ' m^2'
 
