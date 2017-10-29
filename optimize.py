@@ -75,6 +75,7 @@ def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=293.15, ql=100, t1a=275., c
    p1b = p1a - h_major(L_1, LPd, mdot) * gamma 
    if p1b < 50: return 99999
    if r< 1: return 99999
+   if HPd > 10: return 9999
    t1b = t1a * (p1b / p1a) ** ((k-1)/k)
    if t1b < 0: return 9999
    p2a = p1b * (r)
@@ -155,7 +156,7 @@ print 'pressure ratio is ', x[7]
 print 'Work is ', w, ' kW'
 print 'baseline is ', w0, ', kW'
 print ' '
-print 'Heat Exchanger Area Requirements: (assume k=385.0 W/mK and x = .005 m)'
+print 'Heat Exchanger Area Requirements: (assume k=385.0 W/mK and x = .05 m)'
 U = .358 / .05 # kW / m^2 / K
 qh = p[0]
 dth = p[1]
