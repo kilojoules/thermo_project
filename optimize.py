@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from fan_curves import FANCURVE
+from fan_curves2 import FANCURVE
 g = 9.81
 epsilon = 45e-6 # carbon steel
 rho = 1.225 # TODO change this
@@ -47,12 +47,14 @@ L_2 = 10.
 L_3 = 10.
 L_4 = 20.
 def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=293.15, ql=100, t1a=275., cp=1.005, tho=310., p1a=600., n_s_comp=.9, n_s_turb=.9, returnall=False):
+   print DV
 #def work(tlo=265., mdotHElow=1., mdot=1., LHEd=1., HHEd=1., HPd = .25, LPd=1., t3=20., ql=0.6, t1=275., cp=1.005, tho=310., ):
    tlo = DV[0]
-   mdot = DV[1]
-   HPd = DV[2]
-   LPd = DV[3]
-   r = DV[4]
+   mdotHElow = DV[1]
+   mdot = DV[2]
+   HPd = DV[3]
+   LPd = DV[4]
+   r = DV[5]
 
    k = 1.4
 
@@ -77,7 +79,6 @@ def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=293.15, ql=100, t1a=275., c
    t3b = t3a * (p3b / p3a) ** ((k-1)/k)
    w34 = cp * (t3b - t4a) * mdot
    mdotHEhigh = qh / (cp * (tho - t3a))
-   mdotHElow = ql / (cp * (t3b - t4a))
 
    dph = 100 * (tho / t3a) ** k - 100
 
@@ -92,14 +93,15 @@ def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=293.15, ql=100, t1a=275., c
    dpl = 100 * (tlo / t4b) ** k - 100
    vl = (spec_v(tlo, 100) + spec_v(t4a, 100)) / 2
    wl = FANCURVE(vl * mdotHElow / 1000, dpl)  * 1 / 0.7457 # HP to kW
+   print '---------===> ', t1a, t2a, t3a, t4a, w12, qh
 
    if (
    p3b / p4a > r or
-   #qh > 2000 or
+   qh > 2000 or
    #mdotHEhigh < 0.2 or
-   #LPd < 0 or HPd < 0 or 
-   #LPd > 10. or
-   #HPd > 1 or
+   LPd < 0 or HPd < 0 or 
+   LPd > 10. or
+   HPd > 1 or
    tlo > t1a or
    mdot < .2 or t4b < 0 or
    p4b < 5 or
@@ -119,7 +121,6 @@ def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=293.15, ql=100, t1a=275., c
    #tlo < 200 or
    p2b < 50 or 
    t2b < 0): return 9999999
-
    if w12 < 0: print 'w12<0: ', t2a, t1b, t1a, mdot, n_s_comp, cp ; quit()
 
 
@@ -146,7 +147,7 @@ def work(DV=[265., 1., 1., 1., 1., .25, 1., 2.], t3a=293.15, ql=100, t1a=275., c
 #plt.savefig('COP.pdf')
 
 # Optimization
-x0 = np.array([270., 1., .5, 1., 15.])
+x0 = np.array([270., 1., 1., .5, 1., 15.])
 w0 = work(x0)
 from scipy.optimize import minimize
 con = {'type': 'ineq', 'fun': lambda x:100* np.min(x),} # non-negativity constraint
@@ -156,10 +157,11 @@ for _ in range(20): x = minimize(work, x, method="Powell", constraints=con, opti
 w = work(x)
 p = work(x, returnall=True)
 print 'tlo = ', x[0], ' K'
-print 'mdot = ', x[1], ' kg/s'
-print 'HPd = ', x[2], ' m'
-print 'LPd = ', x[3], ' m'
-print 'pressure ratio is ', x[4]
+print 'mdotHElow', x[1], 'kg/s'
+print 'mdot = ', x[2], ' kg/s'
+print 'HPd = ', x[3], ' m'
+print 'LPd = ', x[4], ' m'
+print 'pressure ratio is ', x[5]
 print 'Work is ', w, ' kW'
 print 'baseline is ', w0, ', kW'
 print ' '
