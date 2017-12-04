@@ -34,7 +34,7 @@ for pwr in pwrs:
   if len(hp[pwr][1]) != len(hp[pwr][0]): raise Exception('length mismatch in %f hp'%pwr)
   pwrlist += [pwr for _ in range(len(hp[pwr][0]))]
 X, Y  = np.meshgrid(np.linspace(0, 26, 100), np.linspace(0, 2.5, 100))
-Z = scipy.interpolate.Rbf(vmf, press, pwrlist, function='thin_plate')
+Z = scipy.interpolate.Rbf(vmf, press, pwrlist, function='cubic', fill_value = 9999.)
 FANCURVE = Z
 if __name__=='__main__':
    c = plt.contour(X, Y, Z(X,Y), levels=[1, 2, 3, 5, 7.5, 10, 15], colors='k')
