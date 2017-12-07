@@ -34,13 +34,30 @@ for pwr in pwrs:
   if len(hp[pwr][1]) != len(hp[pwr][0]): raise Exception('length mismatch in %f hp'%pwr)
   pwrlist += [pwr for _ in range(len(hp[pwr][0]))]
 X, Y  = np.meshgrid(np.linspace(0, 26, 100), np.linspace(0, 2.5, 100))
-Z = scipy.interpolate.Rbf(vmf, press, pwrlist, function='cubic', fill_value = 9999.)
+Z = scipy.interpolate.Rbf(vmf, press, pwrlist, function='thin-plate', fill_value = 9999.)
+#FANCON = scipy.interpolate.Rbf(
+#         [0., 2., 6., 8., 10., 12., 14., 16.],
+#         [0., .14, .5, .7, 1.2, 1.5, 2.2, 2.5], fill_value="extrapolate", function='cubic')
+         #fill_value=2.5.)
 FANCURVE = Z
+SCAL = 50.
+wgtokpa = 1. / 4.01865
+def FANCON(v): return SCAL * wgtokpa * (0.00792775 * v**2 + 0.03428444 * v + 0.00830688)
 if __name__=='__main__':
-   c = plt.contour(X, Y, Z(X,Y), levels=[1, 2, 3, 5, 7.5, 10, 15], colors='k')
+   z = Z(X,Y) * (SCAL ** 2./3.)
+   c = plt.contour(X, Y * SCAL * wgtokpa, z, colors='k')
+   #c = plt.contour(X, Y * SCAL * wgtokpa, z, colors='k', levels = np.array([1, 2, 3, 5, 7.5, 10, 15]) * SCAL **(2./3.))
    plt.clabel(c)
-   plt.contourf(X,Y, Z(X,Y), alpha=0.4, cmap=plt.cm.coolwarm)
-   plt.ylabel('Pressure Difference (inches w.g.)')
+   plt.savefig('t1.pdf')
+   plt.contourf(X, Y * SCAL * wgtokpa, z, alpha=0.4, cmap=plt.cm.coolwarm)
+   #c = plt.contour(X * 400, Y * (400 ** 2./3.), Z(X,Y) * (400 ** 2./3.), levels=[1, 2, 3, 5, 7.5, 10, 15], colors='k')
+   plt.ylim(0, np.max(Y * SCAL ) * wgtokpa)
+   print 'probe1'
+   print 'probe2'
+   plt.plot(np.arange(0, 20), FANCON(np.arange(0, 20)), ls='--')
+   plt.ylabel('Pressure Difference (kPa)')
+   #plt.ylabel('Pressure Difference (inches w.g.)')
    plt.xlabel('Volumetric Flow Rate (1000 cfm)')
    plt.title('Power (HP)')
-   plt.show()
+   plt.text(6.5, 400, "Do not design to the left of this line", rotation = 60)
+   plt.savefig('done.pdf')
