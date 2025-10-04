@@ -34,7 +34,7 @@ We assume these fan curves:
 
 ![Fan Performance Curves](artifacts/fan_curves.png)
 
-where the region to the left of the dashed blue line is an infeasable surge/instability region.
+where the region to the left of the dashed blue line is an infeasible surge/instability region.
 
 We find an optimal system optimized to provide 100 kW of cooling with air as a refrigerant:
 
