@@ -60,4 +60,4 @@ if __name__=='__main__':
    plt.xlabel('Volumetric Flow Rate (1000 cfm)')
    plt.title('Power (HP)')
    plt.text(6.5, 400, "Do not design to the left of this line", rotation = 60)
-   plt.savefig('done.pdf')
+   plt.savefig('done.png')

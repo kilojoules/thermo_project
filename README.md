@@ -32,7 +32,7 @@ The full mathematical details are available in [artifacts/report.pdf](artifacts/
 
 Based on these assumed fan curves
 
-![Fan Performance Curves](artifacts/fan_curves.pdf)
+![Fan Performance Curves](artifacts/fan_curves.png)
 
 we find an optimal system optimized to provide 100 kW of cooling with air as a refrigerant:
 
