@@ -30,11 +30,13 @@ The full mathematical details are available in [artifacts/report.pdf](artifacts/
 
 ## Results
 
-Based on these assumed fan curves
+We assume these fan curves:
 
 ![Fan Performance Curves](artifacts/fan_curves.png)
 
-we find an optimal system optimized to provide 100 kW of cooling with air as a refrigerant:
+where the region to the left of the dashed blue line is an infeasable surge/instability region.
+
+We find an optimal system optimized to provide 100 kW of cooling with air as a refrigerant:
 
 | Parameter | Value | 
 |-----------|-------|
